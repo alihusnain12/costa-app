@@ -25,7 +25,7 @@ export default function Signup() {
                       <CommonTextInput placeholder="Enter Password" placeholderTextColor="gray" customStyle={styles.input}/>
                       <CommonTextInput placeholder=" Confirm Password" placeholderTextColor="gray" customStyle={styles.input}/>
                     </View>
-                    <CommonButton title="Sign up" containerStyle={{margin:0}}/>
+                    <CommonButton title="Sign up" containerStyle={{margin:0}} onPress={()=>navigation.navigate("otp")}/>
                      <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',padding:heightPercentageToDP(3)}} >
                               <Text style={{color:'white'}}>Already have an account!</Text>
                               <TouchableOpacity onPress={()=>navigation.navigate("login2")} >
