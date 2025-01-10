@@ -19,7 +19,6 @@ export default function Auth() {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="otp" component={Otp} />
       <Stack.Screen name="NewPassword" component={NewPassword} />
-
       <Stack.Screen name="SignupGoogle" component={SignupGoogle} />
     </Stack.Navigator>
   );

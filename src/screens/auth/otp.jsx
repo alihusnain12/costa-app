@@ -1,14 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ScreenWrapper from '../../components/screenWrapper';
 import { OtpInput } from "react-native-otp-entry";
 import CommonButton from '../../components/button';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 export default function Otp() {
-  const [timer, setTimer] = useState(60);
-  const navigation=useNavigation()
-  
+  const [timer, setTimer] = useState(60); 
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+  const { email, password, name } = useSelector(state => state.user);
+  const { token } = useSelector(state => state.forgot);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
@@ -17,6 +24,82 @@ export default function Otp() {
       return () => clearInterval(interval);
     }
   }, [timer]);
+
+  useEffect(() => {
+    if (email) {
+      sendEmailForOtp();
+    } 
+  }, [email]);
+
+  const sendEmailForOtp = async () => {
+    const data = { "email": email };
+
+    try {
+      await axios.post('https://qostabackend.onrender.com/api/users/send-code', data, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Failed to send OTP email', error);
+    }
+  };
+
+  const verifyOtpAndSignup = async () => {
+    setLoading(true);
+    try {
+      const otpVerificationData = {
+        "email": email,
+        "code": otp
+      };
+
+      await axios.post('https://qostabackend.onrender.com/api/users/verify-otp/registration', otpVerificationData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const signupData = {
+        "name": name,
+        "password": password,
+        "email": email
+      };
+
+      await axios.post('https://qostabackend.onrender.com/api/users/signup', signupData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      navigation.navigate("login2");
+    } catch (error) {
+      console.error('OTP verification or signup failed', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOtpAndNavigateToNewPassword = async () => {
+    setLoading(true);
+    try {
+      const otpVerificationData = {
+        "token": token,
+        "code": otp
+      };
+
+      await axios.post('https://qostabackend.onrender.com/api/users/verify-otp/forget-password', otpVerificationData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+navigation.navigate("NewPassword", { token, code: otp });
+
+    } catch (error) {
+      console.error('OTP verification for forgot password failed', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleContinue = () => {
+    if (token) {
+      verifyOtpAndNavigateToNewPassword();
+    } else {
+      verifyOtpAndSignup();
+    }
+  };
 
   return (
     <ScreenWrapper>
@@ -27,18 +110,22 @@ export default function Otp() {
           style={styles.otpInput}
           numberOfDigits={4}
           autoFocusOnLoad
-          codeInputFieldStyle={styles.otpInputField}
-          codeInputHighlightStyle={styles.otpInputHighlight}
+          onTextChange={(e) => setOtp(e)}
+          theme={{ pinCodeContainerStyle: styles.inputs }}
         />
         {timer > 0 ? (
           <Text style={styles.timer}>00:{timer < 10 ? `0${timer}` : timer}</Text>
         ) : (
-          <TouchableOpacity onPress={() => setTimer(60)}>
+          <TouchableOpacity onPress={() => { setTimer(60); sendEmailForOtp(); }}>
             <Text style={styles.resend}>Resend OTP</Text>
           </TouchableOpacity>
         )}
       </View>
-      <CommonButton title="Continue" containerStyle={{backgroundColor:'gray'}} onPress={()=>navigation.navigate("NewPassword")}/>
+      {loading ? (
+        <ActivityIndicator size="large" color="white" />
+      ) : (
+        <CommonButton title="Continue" containerStyle={{ backgroundColor: 'gray' }} onPress={handleContinue} />
+      )}
     </ScreenWrapper>
   );
 }
@@ -48,30 +135,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 10,
+    backgroundColor: 'black', // Set the background to black
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: 'white',
-  },
-  otpInput: {
-    width: '100%',
-    height: 60,
-  },
-  otpInputField: {
-    width: 40,
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 100,
-    color: 'white',
-    textAlign: 'center',
-    marginHorizontal: 5,
-  },
-  otpInputHighlight: {
-    borderColor: '#00BFFF',
   },
   timer: {
     fontSize: 16,
@@ -82,5 +152,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#00BFFF',
     marginTop: 10,
+  },
+  inputs: {
+    backgroundColor: 'gray',
+    borderRadius: 200,
+    margin: 0,
   },
 });

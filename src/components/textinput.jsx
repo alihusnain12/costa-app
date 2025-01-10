@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     height: heightPercentageToDP(6.3),
     borderWidth: 1,
     borderRadius: 10,
-    marginBottom: 10,
-    backgroundColor:"#22212fbf"
+    // marginBottom: 10,
+    backgroundColor:"#22212fbf",
+    color:'white'
   },
 });

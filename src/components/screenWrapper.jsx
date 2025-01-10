@@ -21,8 +21,7 @@ export default function ScreenWrapper({ children, backgroundColor = '#000000' })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
-    // padding: width * 0.05,
-    paddingHorizontal:heightPercentageToDP(2)
+    paddingHorizontal:heightPercentageToDP(2),
+    paddingTop:heightPercentageToDP(1)
   },
 })

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "502831748613",
+    "project_id": "costaapp-b7ee3",
+    "storage_bucket": "costaapp-b7ee3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502831748613:android:1783a472ae8c941f356e6c",
+        "android_client_info": {
+          "package_name": "com.qosta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502831748613-gli82v66e7ckjpr7mcmgsoc2t3u06ic8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qosta",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "502831748613-em3o51bq3u0qadmhm691d58knnqnt0t1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBDrPdipVUKS4RM7uwDy33lTA4Bv_rZv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502831748613-em3o51bq3u0qadmhm691d58knnqnt0t1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
